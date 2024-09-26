@@ -21,3 +21,9 @@ lookup(treea1b3c2d4, "e")
 
 insert(treea1b3c2d4, "f", 5)
 insert(treea1b3c2d4, "-", 0)
+
+import FuncContext.*
+
+val a = cons("a", 1, cons("a", 3, empty))
+
+erase(a, "a")("a")
