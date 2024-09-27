@@ -45,5 +45,4 @@ def createNewVipUser(id: Int): Boolean =
     true
 
 def upgradeUserToVip(id: Int): Boolean =
-  val canCreateNewVipUser = createNewVipUser(id)
-  contains(users, id) && canCreateNewVipUser
+  contains(users, id) && createNewVipUser(id)
