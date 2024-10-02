@@ -22,34 +22,45 @@ def reduceRight[A](l: MyList[A])(f: (A, A) => A): A = l match
   case Cons(h, t)   => f(h, reduceRight(t)(f))  
 
 def forall[A](l: MyList[A])(p: A => Boolean): Boolean =
-  ???
+  foldRight[A, Boolean](l)((h, t) => p(h) && t, true)
 
 def exists[A](l: MyList[A])(p: A => Boolean): Boolean =
-  ???
+  foldRight[A, Boolean](l)((h, t) => p(h) || t, false)
 
-def zip[A, B](l1: MyList[A], l2: MyList[B]): MyList[(A, B)] =
-  ???
+def zip[A, B](l1: MyList[A], l2: MyList[B]): MyList[(A, B)] = (l1, l2) match
+  case (Nil, _) | (_, Nil)          => Nil
+  case (Cons(h1, t1), Cons(h2, t2)) => Cons((h1, h2), zip(t1, t2))
 
-def zipWith[A, B, C](l1: MyList[A], l2: MyList[B])(op: (A, B) => C): MyList[C] =
-  ???
+def zipWith[A, B, C](l1: MyList[A], l2: MyList[B])(op: (A, B) => C): MyList[C] = (l1, l2) match
+  case (Nil, _) | (_, Nil)          => Nil
+  case (Cons(h1, t1), Cons(h2, t2)) => Cons(op(h1, h2), zipWith(t1, t2)(op))
 
 def elementsAsStrings[A](l: MyList[A]): MyList[String] =
-  ???
+  map(l)(_.toString())
 
-def length[A](l: MyList[A]): Int =
-  ???
+def length[A](l: MyList[A]): Int = l match
+  case Nil        => 0
+  case Cons(h, t) => 1 + length(t)
 
-def takeWhilePositive(l: MyList[Int]): MyList[Int] =
-  ???
+def takeWhilePositive(l: MyList[Int]): MyList[Int] = l match
+  case Nil        => Nil
+  case Cons(h, t) => if h > 0 then Cons(h, takeWhilePositive(t)) else Nil
 
-def last[A](l: MyList[A]): A =
-  ???
+def last[A](l: MyList[A]): A = l match
+  case Nil          => throw IllegalArgumentException()
+  case Cons(h, Nil) => h
+  case Cons(_, t)   => last(t)
 
 val capitalizeString: MyList[Char] => MyList[Char] =
-  TODO
+  (l: MyList[Char]) => map(l)(_.toUpper)
 
-def wordCount(l: MyList[Char]): Int =
-  ???
+def discardWord(l: MyList[Char]): MyList[Char] = l match
+  case Nil        => Nil
+  case Cons(h, t) => if h.isWhitespace then l else discardWord(t)
+
+def wordCount(l: MyList[Char]): Int = l match
+  case Nil        => 0
+  case Cons(h, t) => if h.isWhitespace then wordCount(t) else 1 + wordCount(discardWord(t))
 
 def append[A](l1: MyList[A], l2: MyList[A]): MyList[A] = l1 match
   case Nil         => l2
@@ -58,12 +69,12 @@ def append[A](l1: MyList[A], l2: MyList[A]): MyList[A] = l1 match
 extension [A](l: MyList[A])
   def ++(that: MyList[A]): MyList[A] = append(l, that)
 
-def flatMap[A, B](l: MyList[A])(f: A => MyList[B]): MyList[B] =
-  ???
-
+def flatMap[A, B](l: MyList[A])(f: A => MyList[B]): MyList[B] = l match
+  case Nil        => Nil
+  case Cons(h, t) => f(h) ++ flatMap(t)(f)
 
 def flatten[A](l: MyList[MyList[A]]): MyList[A] =
-  ???
+  flatMap(l)(l => l)
 
 def crossProduct[A, B](l1: MyList[A], l2: MyList[B]): MyList[(A, B)] =
   ???
