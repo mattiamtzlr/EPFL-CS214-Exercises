@@ -9,16 +9,13 @@ def capitalizeString(s: String): String =
   else s.head.toUpper.toString + capitalizeString(s.tail)
 
 def discardWord(s: String): String =
-  if s.isEmpty() then ""
-  else
-    if !s.head.isWhitespace then discardWord(s.tail)
-    else s.head.toString + s.tail
+  if s.isEmpty() || s.head.isWhitespace then s
+  else discardWord(s.tail)
 
 def wordCount(s: String): Int =
   if s.isEmpty() then 0
-  else 
-    if s.head.isWhitespace then wordCount(s.tail)
-    else 1 + wordCount(discardWord(s.tail))
+  else if s.head.isWhitespace then wordCount(s.tail)
+  else 1 + wordCount(discardWord(s.tail))
 
 def isBlank(s: String): Boolean =
   if s.isEmpty then true
