@@ -76,9 +76,9 @@ def flatMap[A, B](l: MyList[A])(f: A => MyList[B]): MyList[B] = l match
 def flatten[A](l: MyList[MyList[A]]): MyList[A] =
   flatMap(l)(l => l)
 
-def crossProduct[A, B](l1: MyList[A], l2: MyList[B]): MyList[(A, B)] =
-  ???
-
+def crossProduct[A, B](l1: MyList[A], l2: MyList[B]): MyList[(A, B)] = l1 match
+  case Nil        => Nil
+  case Cons(h, t) => flatMap(l1)(a => map(l2)(b => (a, b)))
 
 def allThreeLetterWords(words: MyList[String]): MyList[String] =
   filter(words)(_.length == 3)
@@ -98,29 +98,34 @@ def sum0(l: MyList[Int]): Int = l match
   case Cons(x, xs) => x + sum0(xs)
 
 def sum1(l: MyList[Int]): Int =
-  // @tailrec // Uncomment this line.
-  def sum(l: MyList[Int], acc: Int): Int = ???
+  @tailrec // Uncomment this line.
+  def sum(l: MyList[Int], acc: Int): Int = l match
+    case Nil        => acc
+    case Cons(h, t) => sum(t, acc + h)
+
   sum(l, 0)
 
-// @tailrec // Uncomment this line.
-def foldLeft[A, B](l: MyList[A])(base: B, f: (B, A) => B): B =
-  ???
+@tailrec // Uncomment this line.
+def foldLeft[A, B](l: MyList[A])(base: B, f: (B, A) => B): B = l match
+  case Nil        => base
+  case Cons(h, t) => foldLeft(t)(f(base, h), f)
 
 def sum0Fold(l: MyList[Int]): Int =
-  ???
-def sum1Fold(l: MyList[Int]): Int =
-  ???
+  foldRight(l)((h, t) => h + t, 0)
 
-def reverseAppend[A](l1: MyList[A], l2: MyList[A]): MyList[A] =
-  ???
+def sum1Fold(l: MyList[Int]): Int =
+  foldLeft(l)(0, (t, h) => h + t)
+
+def reverseAppend[A](l1: MyList[A], l2: MyList[A]): MyList[A] = 
+  foldLeft(l1)(l2, (t, h) => Cons(h, t))
 
 def reverse[A](l: MyList[A]): MyList[A] = reverseAppend(l, Nil)
 
 val countEven: MyList[Int] => Int =
-  TODO
+  (l: MyList[Int]) => foldLeft(l)(0, (t, h) => (if h % 2 == 0 then 1 else 0) + t)
 
 val totalLength: MyList[String] => Int =
-  TODO
+  (l: MyList[String]) => foldLeft(l)(0, (t, h) => h.length() + t)
 
 // A polymorphic method:
 def foo[A](xs: List[A]): List[A] = ???
@@ -128,5 +133,5 @@ def foo[A](xs: List[A]): List[A] = ???
 // A polymorphic function value:
 val bar = [A] => (xs: List[A]) => foo(xs)
 
-val curriedZipWith =
-  TODO
+val curriedZipWith = [A, B, C] => (l1: MyList[A], l2: MyList[B]) => (op: ((A, B)) => C) => 
+  map(zip(l1, l2))(op)
