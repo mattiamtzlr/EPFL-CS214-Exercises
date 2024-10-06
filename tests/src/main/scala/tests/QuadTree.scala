@@ -4,19 +4,47 @@ case class Vector2(x: Double, y: Double)
 case class WithPos[+T](pos: Vector2, t: T)
 
 enum QuadTree[+T] extends Iterable[T]:
+  /**
+    * Constructs an empty QuadTree
+    */
   case Empty
+  
+  /**
+    * Constructs a new leaf containing a list of value-coordinate pairs
+    *
+    * @param t List of value-coordinate pairs associated with this leaf.
+    */
   case Leaf(t: List[WithPos[T]])
+
+  /**
+    * Constructs a new quad with a center coordinate and 4 child QuadTrees
+    *
+    * @param center The coordinates (Vector2) of the quad
+    * @param nw     The north-west child QuadTree (top-left)
+    * @param ne     The north-east child QuadTree (top-right)
+    * @param sw     The south-west child QuadTree (bottom-left)
+    * @param se     The south-east child QuadTree (bottom-right)
+    */
   case Quad(center: Vector2, nw: QuadTree[T], ne: QuadTree[T], sw: QuadTree[T], se: QuadTree[T])
 
+  /**
+    * Returns the size of the tree, calculated recursively using the size of all 
+    * its subtrees/leaves.
+    *
+    * @return The size of the tree (this)
+    */
   override def size: Int =
     this match
-      case Empty =>
-        0
-      case Leaf(ts) =>
-        1
-      case Quad(center, nw, ne, sw, se) =>
-        nw.size + ne.size + sw.size + se.size
+      case Empty                        => 0
+      case Leaf(_)                      => 1
+      case Quad(center, nw, ne, sw, se) => nw.size + ne.size + sw.size + se.size
 
+  /**
+    * 
+    *
+    * @param t
+    * @return
+    */
   def insert[U >: T](t: WithPos[U]): QuadTree[U] =
     this match
       case Empty     => Leaf(List(t))
