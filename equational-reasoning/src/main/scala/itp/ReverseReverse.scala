@@ -40,13 +40,24 @@ object ReverseReverse:
     val baseCase = Theorem(
       Nil.reverse.reverse === Nil
     ):
-      ???
+      Nil.reverse.reverse
+        === Nil.reverse ==< Reverse.NilCase
+        === Nil         ==< Reverse.NilCase
 
     val IH = (xs.reverse.reverse === xs)
-      ???
 
     val inductiveCase = Theorem(
       IH ==>
         ((x :: xs).reverse.reverse === (x :: xs))
     ):
-      ???
+      (x :: xs).reverse.reverse
+        === (xs.reverse ++ List(x)).reverse       ==< Reverse.ConsCase
+        === List(x).reverse ++ xs.reverse.reverse ==< Reverse.AppendCase
+        === List(x).reverse ++ xs                 ==< IH
+        === (x :: Nil).reverse ++ xs              ==< Restate
+        === (Nil.reverse ++ List(x)) ++ xs        ==< Reverse.ConsCase
+        === (Nil ++ List(x)) ++ xs                ==< Reverse.NilCase
+        === List(x) ++ xs                         ==< Append.NilCase
+        === (x :: Nil) ++ xs                      ==< Restate
+        === x :: (Nil ++ xs)                      ==< Append.ConsCase
+        === x :: xs                               ==< Append.NilCase

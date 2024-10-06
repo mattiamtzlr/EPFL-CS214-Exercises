@@ -33,16 +33,21 @@ object ReverseAppend:
     val baseCase = Theorem(
       (Nil ++ ys).reverse === (ys.reverse ++ Nil.reverse)
     ):
-      ???
+      (Nil ++ ys).reverse
+        === ys.reverse                ==< Append.NilCase
+        === ys.reverse ++ Nil         ==< Append.NilEnd
+        === ys.reverse ++ Nil.reverse ==< Reverse.NilCase
 
-
-    val IH = 
-      ???
+    val IH = (xs ++ ys).reverse === ys.reverse ++ xs.reverse
 
     val inductiveCase = Theorem(
       IH ==>
-        (((x :: xs) ++ ys).reverse
-          === ys.reverse ++ (x :: xs).reverse)
+        (((x :: xs) ++ ys).reverse === ys.reverse ++ (x :: xs).reverse)
     ):
-      ???
+      ((x :: xs) ++ ys).reverse
+        === (x :: (xs ++ ys)).reverse             ==< Append.ConsCase
+        === (xs ++ ys).reverse ++ List(x)         ==< Reverse.ConsCase
+        === (ys.reverse ++ xs.reverse) ++ List(x) ==< IH
+        === ys.reverse ++ (xs.reverse ++ List(x)) ==< Append.Assoc
+        === ys.reverse ++ (x :: xs).reverse       ==< Reverse.ConsCase
     

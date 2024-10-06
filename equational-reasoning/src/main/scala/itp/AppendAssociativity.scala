@@ -15,6 +15,7 @@ object AppendAssociativity:
     object Append:
       val NilCase   = Axiom((Nil ++ xs) === xs)
       val ConsCase  = Axiom(((x :: xs) ++ ys) === (x :: (xs ++ ys)))
+
   @main def assoc =
     // We prove, by induction on xs, that for all xs,ys,zs:
     //    (xs ++ ys) ++ zs === xs ++ (ys ++ zs)
@@ -22,7 +23,9 @@ object AppendAssociativity:
     val baseCase = Theorem(
       (Nil ++ ys) ++ zs === Nil ++ (ys ++ zs)
     ):
-      ???
+      (Nil ++ ys) ++ zs
+        === ys ++ zs          ==< Append.NilCase
+        === Nil ++ (ys ++ zs) ==< Append.NilCase
 
     val IH = (xs ++ ys) ++ zs === xs ++ (ys ++ zs)
 
@@ -30,7 +33,12 @@ object AppendAssociativity:
       IH ==>
         ((x :: xs) ++ (ys ++ zs) === ((x :: xs) ++ ys) ++ zs)
     ):
-      ???
+      (x :: xs) ++ (ys ++ zs)
+        === x :: (xs ++ (ys ++ zs)) ==< Append.ConsCase
+        === x :: ((xs ++ ys) ++ zs) ==< IH
+        === (x :: (xs ++ ys)) ++ zs ==< Append.ConsCase
+        === ((x :: xs) ++ ys) ++ zs ==< Append.ConsCase
+
   @main def assocFor =
     // We prove, by induction on xs, that for all xs,ys,zs:
     //    (xs ++ ys) ++ zs === xs ++ (ys ++ zs)
@@ -40,6 +48,19 @@ object AppendAssociativity:
       (v ++ ys) ++ zs === v ++ (ys ++ zs)
 
     // Theorems for base case and inductive case using assocFor shorthand
-    ???
+    val baseCase = Theorem(assocFor(Nil)):
+      (Nil ++ ys) ++ zs
+        === ys ++ zs          ==< Append.NilCase
+        === Nil ++ (ys ++ zs) ==< Append.NilCase
+    
+    val inductiveCase = Theorem(
+      assocFor(xs) ==> assocFor(x :: xs)
+    ):
+      (x :: xs) ++ (ys ++ zs)
+        === x :: (xs ++ (ys ++ zs)) ==< Append.ConsCase
+        === x :: ((xs ++ ys) ++ zs) ==< assocFor(xs)
+        === (x :: (xs ++ ys)) ++ zs ==< Append.ConsCase
+        === ((x :: xs) ++ ys) ++ zs ==< Append.ConsCase
+
 
 end AppendAssociativity

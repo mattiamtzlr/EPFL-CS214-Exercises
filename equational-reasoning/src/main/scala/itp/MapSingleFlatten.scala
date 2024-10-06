@@ -68,14 +68,18 @@ object MapSingleFlatten:
 
     val nilAppend = Theorem((x :: Nil) ++ Nil === (x :: Nil)):
       (x :: Nil) ++ Nil
-      ???
+        === x :: (Nil ++ Nil) ==< Append.ConsCase
+        === x :: Nil          ==< Append.NilCase
 
     val assumption = xs ++ Nil === Nil ++ xs
 
     val concatNilFlatten = Theorem(
       assumption ==> ((xs ++ Nil.flatten) === xs)
     ):
-      ???
+      xs ++ Nil.flatten
+        === xs ++ Nil ==< Flatten.NilCase
+        === Nil ++ xs ==< assumption
+        === xs        ==< Append.NilCase
 
     // Restating ::
 
@@ -119,7 +123,8 @@ object MapSingleFlatten:
     // Base Case
     val singleNil = Theorem(Nil.map(single).flatten === Nil):
       Nil.map(single).flatten
-      ???
+        === Nil.flatten ==< Map.NilCase
+        === Nil         ==< Flatten.NilCase
 
     // Induction Hypothesis
     val IH = xs.map(single).flatten === xs
@@ -129,6 +134,11 @@ object MapSingleFlatten:
       IH ==> ((x :: xs).map(single).flatten === (x :: xs))
     ):
       (x :: xs).map(single).flatten
-      ???
+        === (single(x) :: xs.map(single)).flatten ==< Map.ConsCase
+        === single(x) ++ xs.map(single).flatten   ==< Flatten.ConsCase
+        === single(x) ++ xs                       ==< IH
+        === (x :: Nil) ++ xs                      ==< Single.NilCase
+        === x :: (Nil ++ xs)                      ==< Append.ConsCase
+        === x :: xs                               ==< Append.NilCase
 
 end MapSingleFlatten
