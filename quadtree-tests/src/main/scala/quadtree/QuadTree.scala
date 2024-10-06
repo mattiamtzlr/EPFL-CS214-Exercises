@@ -1,4 +1,4 @@
-package tests
+package quadtree
 
 case class Vector2(x: Double, y: Double)
 case class WithPos[+T](pos: Vector2, t: T)
@@ -10,7 +10,7 @@ enum QuadTree[+T] extends Iterable[T]:
   case Empty
   
   /**
-    * Constructs a new leaf containing a list of value-coordinate pairs
+    * Constructs a new leaf containing a list of at most 4 value-coordinate pairs
     *
     * @param t List of value-coordinate pairs associated with this leaf.
     */
@@ -33,21 +33,20 @@ enum QuadTree[+T] extends Iterable[T]:
     *
     * @return The size of the tree (this)
     */
-  override def size: Int =
-    this match
+  override def size: Int = this match
       case Empty                        => 0
-      case Leaf(_)                      => 1
+      case Leaf(ts)                     => ts.length
       case Quad(center, nw, ne, sw, se) => nw.size + ne.size + sw.size + se.size
 
   /**
-    * 
+    * Inserts a new element (value-coordinate pair) into the current QuadTree
     *
-    * @param t
-    * @return
+    * @param t The element to insert
+    * @return  The updated QuadTree
     */
-  def insert[U >: T](t: WithPos[U]): QuadTree[U] =
-    this match
+  def insert[U >: T](t: WithPos[U]): QuadTree[U] = this match
       case Empty     => Leaf(List(t))
+
       case Leaf(ts1) =>
         if this.size > 4 then
           val items = ts1
@@ -56,26 +55,41 @@ enum QuadTree[+T] extends Iterable[T]:
           items.foldLeft(q)(_.insert(_)).insert(t)
         else
           Leaf(ts1 ++ List(t))
+
       case Quad(center, nw, ne, sw, se) =>
         val pos = t.pos
         if pos.y <= center.y then
-          if pos.x <= center.x then
-            Quad(center, nw.insert(t), ne, sw, se)
-          else
-            Quad(center, nw, ne, sw.insert(t), se)
-        else if pos.x <= center.x then
-          Quad(center, nw, ne.insert(t), sw, se)
-        else
-          Quad(center, nw, ne, sw, se.insert(t))
+          if pos.x <= center.x then Quad(center, nw.insert(t), ne, sw, se)
+          else Quad(center, nw, ne.insert(t), sw, se)
+        else 
+          if pos.x <= center.x then Quad(center, nw, ne, sw.insert(t), se)
+          else Quad(center, nw, ne, sw, se.insert(t))
 
-  def contains[U >: T](w: WithPos[U]): Boolean =
-    ???
+  /**
+    * Returns `true` if the current QuadTree contains the given value-coordinate pair
+    * and `false` otherwise
+    *
+    * @param w The value-coordinate pair to search for
+    * @return  `true` if found, `false` otherwise
+    */
+  def contains[U >: T](w: WithPos[U]): Boolean = this match
+    case Empty                        => false
+    case Leaf(ts)                     => ts.contains(w)
+
+    case Quad(center, nw, ne, sw, se) => 
+      val pos = w.pos
+      if pos.y <= center.y then
+        if pos.x <= center.x then nw.contains(w)
+        else ne.contains(w)
+      else 
+        if pos.x <= center.x then sw.contains(w)
+        else se.contains(w)
 
   def filter(xmin: Float, xmax: Float, ymin: Float, ymax: Float, pred: T => Boolean): QuadTree[T] =
     this match
       case Empty => Empty
-      case Leaf(ts) =>
-        Leaf(ts.filter(wp => pred(wp.t)))
+      case Leaf(ts) => Leaf(ts.filter(wp => pred(wp.t)))
+
       case Quad(center, nw, ne, sw, se) =>
         Quad(
           center,
@@ -89,10 +103,10 @@ enum QuadTree[+T] extends Iterable[T]:
           else se.filter(xmin, xmax, ymin, ymax, pred)
         )
 
-  def iterator: Iterator[T] =
-    this match
+  def iterator: Iterator[T] = this match
       case Empty    => Iterator.empty
       case Leaf(ts) => ts.iterator.map(_.t)
+
       case Quad(center, nw, ne, sw, se) =>
         nw.iterator
           .concat(ne.iterator)
@@ -101,6 +115,4 @@ enum QuadTree[+T] extends Iterable[T]:
 
 object QuadTree:
   def fromCollection[T](ts: Iterable[T], pos: T => Vector2) =
-    ts.foldLeft(Empty: QuadTree[T])((qt, t) =>
-      qt.insert(WithPos(pos(t), t))
-    )
+    ts.foldLeft(Empty: QuadTree[T])((qt, t) => qt.insert(WithPos(pos(t), t)))
