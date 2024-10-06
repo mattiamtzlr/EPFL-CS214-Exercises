@@ -5,28 +5,29 @@ import QuadTree.*
 // Inspired by assets/quadtree-example.png
 /* 
 x   0 1 2 3   4 5 6 7   8 9 a b   c d e f
-  +---------+---------+---------+---------+
+  +-------------------+---------+---------+
 0 |                   |         |         |
 1 |                   |         |       C |
 2 |                   |         |   F     |        A = (5,   5)
 3 |                   |         |         |        B = (2,   9)
-  |                   +---------+---------+        C = (15,  1)
+  |                   |---------+---------|        C = (15,  1)
 4 |                   |         |         |        D = (9,   7)
 5 |             A     |         |         |        E = (14, 15)
 6 |                   |         |         |        F = (13,  2)
 7 |                   |   D     |         |
-  +---------+---------+---------+---------+
+  +-------------------+---------+---------+
 8 |                   |         |         |
 9 |     B             |         |         |
 a |                   |         |         |
 b |                   |         |         |
-  |                   +---------+---------+
+  |                   |---------+----+----|
 c |                   |         |    |    |
 d |                   |         |____|____|
 e |                   |         |    |    |
 f |                   |         |    |E   |
-  +---------------------------------------+
+  +----------------------------------+----+
 */
+
 val quadTree: QuadTree[Char] = Quad(
     Vector2(7.5, 7.5), 
     nw = Leaf(List(WithPos(Vector2(5, 5), 'A'))),
@@ -46,7 +47,17 @@ val quadTree: QuadTree[Char] = Quad(
 quadTree.size
 quadTree.contains(WithPos(Vector2(5, 5), 'A'))
 
-// Insert element in SW leaf of SE quadtree
-val inserted = quadTree.insert(WithPos(Vector2(10, 12), 'G'))
-inserted.size
-inserted.contains(WithPos(Vector2(10, 12), 'G'))
+// Insert element in NE leaf of NE quadtree
+val inserted1 = quadTree.insert(WithPos(Vector2(12, 0), 'G'))
+inserted1.size
+inserted1.contains(WithPos(Vector2(12, 0), 'G'))
+
+// do it again to reach max capacity for that leaf
+val inserted2 = inserted1.insert(WithPos(Vector2(15, 3), 'H'))
+inserted2.size
+inserted2.contains(WithPos(Vector2(15, 3), 'H'))
+
+// and again to trigger the creation of a new Quad
+val inserted3 = inserted2.insert(WithPos(Vector2(14, 2), 'I'))
+inserted3.size
+inserted3.contains(WithPos(Vector2(14, 2), 'I'))

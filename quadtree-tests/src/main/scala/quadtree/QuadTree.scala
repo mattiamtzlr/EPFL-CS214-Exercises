@@ -33,10 +33,12 @@ enum QuadTree[+T] extends Iterable[T]:
     *
     * @return The size of the tree (this)
     */
-  override def size: Int = this match
+  override def size: Int = {
+    this match
       case Empty                        => 0
       case Leaf(ts)                     => ts.length
       case Quad(center, nw, ne, sw, se) => nw.size + ne.size + sw.size + se.size
+  } ensuring(res => res >= 0)
 
   /**
     * Inserts a new element (value-coordinate pair) into the current QuadTree
@@ -44,15 +46,17 @@ enum QuadTree[+T] extends Iterable[T]:
     * @param t The element to insert
     * @return  The updated QuadTree
     */
-  def insert[U >: T](t: WithPos[U]): QuadTree[U] = this match
+  def insert[U >: T](t: WithPos[U]): QuadTree[U] = {
+    this match
       case Empty     => Leaf(List(t))
 
       case Leaf(ts1) =>
-        if this.size > 4 then
+        if this.size >= 4 then
           val items = ts1
           val center = items.head.pos
           val q: QuadTree[U] = Quad(center, Empty, Empty, Empty, Empty)
           items.foldLeft(q)(_.insert(_)).insert(t)
+
         else
           Leaf(ts1 ++ List(t))
 
@@ -61,9 +65,11 @@ enum QuadTree[+T] extends Iterable[T]:
         if pos.y <= center.y then
           if pos.x <= center.x then Quad(center, nw.insert(t), ne, sw, se)
           else Quad(center, nw, ne.insert(t), sw, se)
+
         else 
           if pos.x <= center.x then Quad(center, nw, ne, sw.insert(t), se)
           else Quad(center, nw, ne, sw, se.insert(t))
+  } ensuring(res => res.size > this.size) 
 
   /**
     * Returns `true` if the current QuadTree contains the given value-coordinate pair
@@ -81,10 +87,12 @@ enum QuadTree[+T] extends Iterable[T]:
       if pos.y <= center.y then
         if pos.x <= center.x then nw.contains(w)
         else ne.contains(w)
+
       else 
         if pos.x <= center.x then sw.contains(w)
         else se.contains(w)
 
+  
   def filter(xmin: Float, xmax: Float, ymin: Float, ymax: Float, pred: T => Boolean): QuadTree[T] =
     this match
       case Empty => Empty
@@ -104,14 +112,30 @@ enum QuadTree[+T] extends Iterable[T]:
         )
 
   def iterator: Iterator[T] = this match
-      case Empty    => Iterator.empty
-      case Leaf(ts) => ts.iterator.map(_.t)
+    case Empty    => Iterator.empty
+    case Leaf(ts) => ts.iterator.map(_.t)
 
-      case Quad(center, nw, ne, sw, se) =>
-        nw.iterator
-          .concat(ne.iterator)
-          .concat(sw.iterator)
-          .concat(se.iterator)
+    case Quad(center, nw, ne, sw, se) =>
+      nw.iterator
+        .concat(ne.iterator)
+        .concat(sw.iterator)
+        .concat(se.iterator)
+        
+  override def toString(): String = 
+    def indentString(q: QuadTree[T], i: String): String =
+      q match
+        case Empty                   => "{}"
+        case Leaf(ts)                => ts.map(t => f"(${t.pos.x}, ${t.pos.y}): ${t.t}").mkString
+        case Quad(c, nw, ne, sw, se) => f"""
+${i}Quad={
+  ${i}center=(${c.x}, ${c.y}), 
+  ${i}nw:${indentString(nw, i + "  ")}, 
+  ${i}ne:${indentString(ne, i + "  ")}, 
+  ${i}sw:${indentString(sw, i + "  ")}, 
+  ${i}se:${indentString(se, i + "  ")}, 
+${i}}"""
+
+    indentString(this, "")
 
 object QuadTree:
   def fromCollection[T](ts: Iterable[T], pos: T => Vector2) =
