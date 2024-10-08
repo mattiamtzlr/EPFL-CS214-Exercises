@@ -53,7 +53,8 @@ enum QuadTree[+T] extends Iterable[T]:
       case Leaf(ts1) =>
         if this.size >= 4 then
           val items = ts1
-          val center = items.head.pos
+          val totalMass = ts1.foldLeft(Vector2(0, 0))((v, wp) => Vector2(v.x + wp.pos.x, v.y + wp.pos.y))
+          val center = Vector2(totalMass.x / ts1.length, totalMass.y / ts1.length)
           val q: QuadTree[U] = Quad(center, Empty, Empty, Empty, Empty)
           items.foldLeft(q)(_.insert(_)).insert(t)
 
@@ -93,7 +94,20 @@ enum QuadTree[+T] extends Iterable[T]:
         else se.contains(w)
 
   
-  def filter(xmin: Float, xmax: Float, ymin: Float, ymax: Float, pred: T => Boolean): QuadTree[T] =
+  /**
+    * Filters this QuadTree in a given (sub-)region using the given predicate.  
+    *
+    * Note that this region is defined in terms of the sub-quads, meaning that all elements in a 
+    * nodes in quad will be tested even if only a part of that node is within the region.
+    *
+    * @param xmin The minimal x coordinate of the region to filter in
+    * @param xmax The maximal x coordinate of the region to filter in
+    * @param ymin The minimal y coordinate of the region to filter in
+    * @param ymax The maximal y coordinate of the region to filter in
+    * @param pred The predicate to be applied to each element
+    * @return     The filtered QuadTree
+    */
+  def filter(xmin: Float, xmax: Float, ymin: Float, ymax: Float, pred: T => Boolean): QuadTree[T] = {
     this match
       case Empty => Empty
       case Leaf(ts) => Leaf(ts.filter(wp => pred(wp.t)))
@@ -101,15 +115,23 @@ enum QuadTree[+T] extends Iterable[T]:
       case Quad(center, nw, ne, sw, se) =>
         Quad(
           center,
-          if xmin > center.x || ymin > center.y then Empty
-          else nw.filter(xmin, xmax, ymin, ymax, pred),
-          if xmax <= center.x || ymin > center.y then Empty
-          else ne.filter(xmin, xmax, ymin, ymax, pred),
-          if xmin > center.x || ymax <= center.y then Empty
-          else sw.filter(xmin, xmax, ymin, ymax, pred),
-          if xmax <= center.x || ymax <= center.y then Empty
-          else se.filter(xmin, xmax, ymin, ymax, pred)
+          if xmin > center.x || ymin > center.y 
+            then Empty
+            else nw.filter(xmin, xmax, ymin, ymax, pred),
+
+          if xmax <= center.x || ymin > center.y 
+            then Empty
+            else ne.filter(xmin, xmax, ymin, ymax, pred),
+
+          if xmin > center.x || ymax <= center.y 
+            then Empty
+            else sw.filter(xmin, xmax, ymin, ymax, pred),
+            
+          if xmax <= center.x || ymax <= center.y 
+            then Empty
+            else se.filter(xmin, xmax, ymin, ymax, pred)
         )
+  } ensuring(res => res.size <= this.size)
 
   def iterator: Iterator[T] = this match
     case Empty    => Iterator.empty
@@ -124,8 +146,9 @@ enum QuadTree[+T] extends Iterable[T]:
   override def toString(): String = 
     def indentString(q: QuadTree[T], i: String): String =
       q match
-        case Empty                   => "{}"
-        case Leaf(ts)                => ts.map(t => f"(${t.pos.x}, ${t.pos.y}): ${t.t}").mkString
+        case Empty => "{}"
+        case Leaf(ts) => 
+          ts.map(t => f"(${t.pos.x}, ${t.pos.y}): ${t.t}").mkString("{", ", ", "}")
         case Quad(c, nw, ne, sw, se) => f"""
 ${i}Quad={
   ${i}center=(${c.x}, ${c.y}), 
@@ -138,5 +161,13 @@ ${i}}"""
     indentString(this, "")
 
 object QuadTree:
+  /**
+    * Generates a QuadTree from a given iterable using the given function to generate the
+    * positions of the elements.
+    *
+    * @param ts  The iterable to take the elements from
+    * @param pos The function to generate the position of each element with
+    * @return    The QuadTree associated to the iterable
+    */
   def fromCollection[T](ts: Iterable[T], pos: T => Vector2) =
     ts.foldLeft(Empty: QuadTree[T])((qt, t) => qt.insert(WithPos(pos(t), t)))
