@@ -1,1 +1,1 @@
-import se.*
+import specs.*
