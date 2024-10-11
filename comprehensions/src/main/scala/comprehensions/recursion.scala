@@ -2,10 +2,10 @@ package comprehensions
 
 import scala.annotation.tailrec
 
-def factorial(n: Int): Int =
+def factorial(n: Int): BigInt =
   require(n >= 0)
   @tailrec
-  def tailRec(n: Int, acc: Int): Int =
+  def tailRec(n: Int, acc: BigInt): BigInt =
     if n <= 1 then acc
     else tailRec(n - 1, n * acc)
   tailRec(n, 1)

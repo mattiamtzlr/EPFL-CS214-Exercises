@@ -25,6 +25,7 @@ glob(p5, "insane")
 
 factorial(12)
 factorial(19)
+factorial(42)
 
 fastExp(2, 3)
 fastExp(5, 10)

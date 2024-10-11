@@ -2,15 +2,15 @@ package comprehensions
 
 class RecursionTest extends munit.FunSuite:
 
-  val factorials: List[(Int, Int)] =
+  val factorials: List[(Int, BigInt)] =
     List(
-      0 -> 1,
-      1 -> 1,
-      2 -> 2,
-      3 -> 6,
-      4 -> 24,
-      5 -> 120,
-      12 -> 479001600
+      0 -> BigInt(1),
+      1 -> BigInt(1),
+      2 -> BigInt(2),
+      3 -> BigInt(6),
+      4 -> BigInt(24),
+      5 -> BigInt(120),
+      12 -> BigInt(479001600)
     )
   for (n, f) <- factorials do
     test(s"factorial: $n! = $f"):
