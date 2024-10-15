@@ -7,7 +7,8 @@ object FoldReduce:
 
   extension [A](l: List[A])
     def reduceWithFold(op: (A, A) => A): A =
-      ???
+      if l.isEmpty then throw IllegalArgumentException("reduceWithFold called on empty list")
+      else l.tail.foldLeft(l.head)(op)
 
   extension [A](l: List[A])
     def reducePar(op: (A, A) => A): A =
