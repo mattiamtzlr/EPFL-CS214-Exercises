@@ -29,3 +29,13 @@ containsWord(book, "cat")
 longestWord(book)
 
 mostCommonWord(book)
+
+
+import FoldReduce.* 
+val nums = List(1, 2, 3, 4)
+
+reduceWithFold(nums)(_ + _)
+reduceWithFold(names)(_ ++ _)
+
+reducePar(nums)(_ + _)
+reducePar(names)(_ ++ _)
