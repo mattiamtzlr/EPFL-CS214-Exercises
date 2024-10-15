@@ -8,3 +8,24 @@ names.parMapThread(_.length())
 
 numbers.parMapFuture(_ * 2)
 names.parMapFuture(_.length())
+
+
+import BookStats.*
+val book: Book = Vector(
+    Vector("the", "quick", "brown", "fox", "is", "jumping", "over"), 
+    Vector("the", "lazy", "dog")
+)
+
+length(book)
+
+maxChapterLength(book)
+
+countWord(book, "quick")
+countWord(book, "the")
+
+containsWord(book, "brown")
+containsWord(book, "cat")
+
+longestWord(book)
+
+mostCommonWord(book)
