@@ -21,4 +21,4 @@ object FoldReduce:
 
   extension [A](l: List[A])
     def aggregate[B](z: B)(seqop: (B, A) => B, combop: (B, B) => B): B =
-      ???
+      l.par.map(seqop(z, _)).reduce(combop)

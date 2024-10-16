@@ -1,4 +1,5 @@
 import parallelism.*
+import collection.parallel.CollectionConverters.IterableIsParallelizable
 
 val numbers = List(2, 42, -3, 7, -8)
 val names   = List("Mattia", "Hannah", "Leo", "Carla")
@@ -39,3 +40,7 @@ reduceWithFold(names)(_ ++ _)
 
 reducePar(nums)(_ + _)
 reducePar(names)(_ ++ _)
+
+aggregate(names)(0)(_ + _.length, _ + _)
+aggregate(numbers)(1)(_ * _, _ * _)
+aggregate(numbers)(true)(_ && _ !=  0, _ && _)
