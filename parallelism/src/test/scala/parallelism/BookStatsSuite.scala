@@ -5,6 +5,8 @@ import java.nio.file.{Files, Paths}
 import java.nio.charset.StandardCharsets
 import cs214.PathMacro
 
+import scala.collection.immutable.Map
+
 class TestVectorSuite extends munit.FunSuite:
   case class TestVector(
       book: Book,
