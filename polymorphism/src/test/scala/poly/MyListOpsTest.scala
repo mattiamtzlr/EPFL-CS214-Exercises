@@ -216,8 +216,6 @@ class ListOpsTests extends munit.FunSuite:
   test("allThreeWords: returns empty list if no three letter words"):
     assert(allThreeLetterWords(twoLetterWords ++ fourLetterWords).isEmpty)
 
-  // ???: tests
-
   test("sum0: empty list"):
     assertEquals(sum0(Nil), 0)
 

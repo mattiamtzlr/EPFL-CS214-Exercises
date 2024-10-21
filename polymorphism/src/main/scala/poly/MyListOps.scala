@@ -128,7 +128,7 @@ val totalLength: MyList[String] => Int =
   (l: MyList[String]) => foldLeft(l)(0, (t, h) => h.length() + t)
 
 // A polymorphic method:
-def foo[A](xs: List[A]): List[A] = ???
+def foo[A](xs: List[A]): List[A] = xs
 
 // A polymorphic function value:
 val bar = [A] => (xs: List[A]) => foo(xs)
