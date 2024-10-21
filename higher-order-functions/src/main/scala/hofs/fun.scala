@@ -83,34 +83,18 @@ val f4: Long => Long = x =>
 def eqBoolBool(f: Boolean => Boolean, g: Boolean => Boolean) =
   f(true) == g(true) && f(false) == g(false)
 
-val a = (x: Int) => x
-val b = (x: Int) => -x
-val c = (x: Int) => x + 1
-val d = (x: Int) => (x / 2) + 5
-val e = (x: Int) => if x % 10 == 0 then x else (x + 1)
-val f = (x: Int) => -(x * x)
-
-val g = (x: Int) => /* 🔥 */ /* assuming x > 0 */
-  if x == 1 then 1
-  else if x % 2 == 0 then x / 2
-  else 3 * x + 1
-
 import scala.annotation.tailrec
 
+@tailrec
 def fixedPoint(f: Int => Int, start: Int): Int =
-  ???
-
-def mapAsFoldRight(f: Int => Int): IntList => IntList =
-  ???
-
-def filterAsFoldRight(p: Int => Boolean): IntList => IntList =
-  ???
+  val next = f(start)
+  if next == start then start else fixedPoint(f, next)
 
 def forallNoIf(p: Int => Boolean)(l: IntList): Boolean =
-  ???
+  l.isEmpty || (p(l.head) && forallNoIf(p)(l.tail))
 
 def existsNoIf(p: Int => Boolean)(l: IntList): Boolean =
-  ???
+  !l.isEmpty && (p(l.head) || existsNoIf(p)(l.tail))
 
 def isGreaterThanBasic(x: Int, y: Int): Boolean =
   x > y

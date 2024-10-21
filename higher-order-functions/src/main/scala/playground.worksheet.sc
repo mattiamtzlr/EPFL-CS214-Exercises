@@ -25,6 +25,11 @@ collectEvenV2(oneTwoMinusThreeFour)
 lastV2(oneTwoMinusThreeFour)
 minV2(oneTwoMinusThreeFour)
 
+allEven2(oneTwoMinusThreeFour)
+anyNegative2(oneTwoMinusThreeFour)
+
+forallNoIf(_ != 0)(oneTwoMinusThreeFour)
+existsNoIf(_ == 2)(zeroThreeZeroFive)
 
 adder2(x => x + 1, x => x * 2)(2)
 multiplier2(x => x + 1, x => x * 2)(2)

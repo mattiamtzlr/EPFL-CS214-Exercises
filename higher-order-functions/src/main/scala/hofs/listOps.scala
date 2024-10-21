@@ -228,3 +228,15 @@ def reduceRight(f: (Int, Int) => Int) (l: IntList): Int =
 
 val lastV2 = reduceRight((x, y) => y)
 val minV2 = reduceRight((x, y) => if x < y then x else y)
+
+
+def forall(p: Int => Boolean)(l: IntList): Boolean =
+  if l.isEmpty then true
+  else p(l.head) && forall(p)(l.tail)
+
+def exists(p: Int => Boolean)(l: IntList): Boolean =
+  if l.isEmpty then false
+  else p(l.head) || exists(p)(l.tail)
+
+def allEven2(l: IntList): Boolean = forall(_ % 2 == 0)(l)
+def anyNegative2(l: IntList): Boolean = exists(_ < 0)(l)
