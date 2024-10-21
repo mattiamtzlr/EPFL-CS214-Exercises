@@ -7,7 +7,7 @@ def forall(p: Int => Boolean)(t: IntTree): Boolean = t match
 def isBST(t: IntTree): Boolean = t match
     case IntEmptyTree() => true
     case IntBranch(v0, l, r) =>
-         forall(v1 => v0 > v1)(l)
+         forall(v1 => v1 < v0)(l)
       && forall(v1 => v0 < v1)(r)
       && isBST(l)
       && isBST(r)
