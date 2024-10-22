@@ -3,14 +3,7 @@ package specs
 
 object GradeComputations:
   def OverallGrade(labScore: Double, midtermScore: Double, finalScore: Double): Double =
-    ???
-
-
-
-
-
-
-
+    labScore * 0.3 + midtermScore * 0.3 + finalScore * 0.4
 
 
 def filterWithIncompleteSpec[T](l: List[T], p: T => Boolean) = {
