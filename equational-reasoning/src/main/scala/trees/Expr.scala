@@ -1,4 +1,4 @@
-package induction
+package trees
 
 enum Expr:
   case Number(value: BigInt)

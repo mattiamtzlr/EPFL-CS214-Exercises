@@ -25,8 +25,9 @@ object TreeRotation:
   object Axioms:
     object InOrder:
       val EmptyCase   = Axiom(Empty.inOrder === Nil)
-      val NodeCase    = Axiom(Node(left, x, right).inOrder 
-                            === left.inOrder ++ (List(x) ++ right.inOrder))
+      val NodeCase    = Axiom(
+        Node(left, x, right).inOrder === left.inOrder ++ (List(x) ++ right.inOrder)
+      )
 
     object Append:
       val NilCase     = Axiom((Nil ++ xs) === xs)
@@ -49,26 +50,44 @@ object TreeRotation:
     val rotationInvariance = Theorem(
       Node(Node(a, p, b), q, c).inOrder === Node(a, p, Node(b, q, c)).inOrder
     ):
-      ???
+      Node(Node(a, p, b), q, c).inOrder
+        === Node(a, p, b).inOrder ++ (List(q) ++ c.inOrder)                 ==< InOrder.NodeCase
+        === (a.inOrder ++ (List(p) ++ b.inOrder)) ++ (List(q) ++ c.inOrder) ==< InOrder.NodeCase
+        === (a.inOrder ++ (List(p) ++ b.inOrder) ++ List(q)) ++ c.inOrder   ==< Append.Assoc
+        === ((a.inOrder ++ List(p)) ++ b.inOrder ++ List(q)) ++ c.inOrder   ==< Append.Assoc
+        === ((a.inOrder ++ List(p)) ++ b.inOrder) ++ (List(q) ++ c.inOrder) ==< Append.Assoc
+        === (a.inOrder ++ List(p)) ++ (b.inOrder ++ (List(q) ++ c.inOrder)) ==< Append.Assoc
+        === a.inOrder ++ (List(p) ++ (b.inOrder ++ (List(q) ++ c.inOrder))) ==< Append.Assoc
+        === a.inOrder ++ (List(p) ++ Node(b, q, c).inOrder)                 ==< InOrder.NodeCase
+        === Node(a, p, Node(b, q, c)).inOrder                               ==< InOrder.NodeCase
 
     val lemma1 = Theorem(
       Node(Node(a, p, b), q, c).inOrder
         === (a.inOrder ++ (List(p) ++ b.inOrder)) ++ (List(q) ++ c.inOrder)
     ):
-      ???
+      Node(Node(a, p, b), q, c).inOrder
+        === Node(a, p, b).inOrder ++ (List(q) ++ c.inOrder)                 ==< InOrder.NodeCase
+        === (a.inOrder ++ (List(p) ++ b.inOrder)) ++ (List(q) ++ c.inOrder) ==< InOrder.NodeCase
 
     val lemma2 = Theorem(
       Node(a, p, Node(b, q, c)).inOrder
         === (a.inOrder ++ (List(p) ++ (b.inOrder ++ (List(q) ++ c.inOrder))))
     ):
-      ???
-
-      ???
+      Node(a, p, Node(b, q, c)).inOrder
+        === a.inOrder ++ (List(p) ++ Node(b, q, c).inOrder)                 ==< InOrder.NodeCase
+        === a.inOrder ++ (List(p) ++ (b.inOrder ++ (List(q) ++ c.inOrder))) ==< InOrder.NodeCase
 
     val rotationInvarianceFromLemmas = Theorem(
       Node(Node(a, p, b), q, c).inOrder === Node(a, p, Node(b, q, c)).inOrder
     ):
-      ???
+      Node(Node(a, p, b), q, c).inOrder
+        === (a.inOrder ++ (List(p) ++ b.inOrder)) ++ (List(q) ++ c.inOrder) ==< lemma1
+        === (a.inOrder ++ (List(p) ++ b.inOrder) ++ List(q)) ++ c.inOrder   ==< Append.Assoc
+        === ((a.inOrder ++ List(p)) ++ b.inOrder ++ List(q)) ++ c.inOrder   ==< Append.Assoc
+        === ((a.inOrder ++ List(p)) ++ b.inOrder) ++ (List(q) ++ c.inOrder) ==< Append.Assoc
+        === (a.inOrder ++ List(p)) ++ (b.inOrder ++ (List(q) ++ c.inOrder)) ==< Append.Assoc
+        === a.inOrder ++ (List(p) ++ (b.inOrder ++ (List(q) ++ c.inOrder))) ==< Append.Assoc
+        === Node(a, p, Node(b, q, c)).inOrder                               ==< lemma2
 
 
 end TreeRotation
