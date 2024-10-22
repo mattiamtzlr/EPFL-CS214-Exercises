@@ -17,7 +17,9 @@ trait Stack[+T] extends HasTop[T]:
   */
 case class ListStack[T](l: List[T]) extends Stack[T]:
   def peek(): Option[T] = l.headOption
+
   def push[S >: T](s: S): Stack[S] = ListStack(s :: l)
+
   def pop(): (Option[T], Stack[T]) = l match
     case Nil    => (None, ListStack(Nil))
     case h :: t => (Option(h), ListStack(t))
@@ -32,9 +34,10 @@ def mkStackString(): Stack[String] = ListStack(List("a", "b", "c"))
 // Does this work?
 // val tops = joinStacks(List(mkStackInt(), mkStackString())) - nope
 
-trait Drawer[T]:
+trait Drawer[T] extends HasTop[T]:
   def get(): T
   def put(t: T): Drawer[T]
+  def top: Option[T] = Some(get())
 
 case class IncrementingDrawer(i: Int) extends Drawer[Int]:
   def get() = i - 1
@@ -49,7 +52,7 @@ trait Box[+T] extends HasTop[T]:
   def replace[S >: T](s: S): Box[S]
 
   /** Create a new box by applying `f` to the contents of this one */
-  def map[T2](f: T => T2): Box[T2]
+  def map[S](f: T => S): Box[S]
 
   def top: Option[T] = unbox()
 
