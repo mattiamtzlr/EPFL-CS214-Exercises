@@ -1,6 +1,6 @@
 package tests
 
-class ExampleSuite extends munit.FunSuite:
+class QuadTreeSuite extends munit.FunSuite:
   import quadtree.*
   import QuadTree.*
 

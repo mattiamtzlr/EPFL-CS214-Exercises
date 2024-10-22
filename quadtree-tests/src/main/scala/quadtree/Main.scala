@@ -81,19 +81,20 @@ object Main {
       +----------------------------------+----+
     */
 
-    println(inserted3)
+    // println(inserted3)
 
     // should only keep A, D (directly within region) and B (node within region)
     val filteredRegion = inserted3.filter(3, 10, 2, 13, _ => true)
-    println(filteredRegion)
+    // println(filteredRegion)
 
     // should only keep D, F, H as they are within the region and their ascii code is even
     val filteredPred = inserted3.filter(7.5, 15, 0, 7.5, _ % 2 == 0)
-    println(filteredPred)
+    // println(filteredPred)
 
     // generates a QuadTree where every number between 0 and 63 inc is located as in a 
     // row-major matrix
-    val elements = (0 to 63).toList
-    val generated = fromCollection(elements, e => Vector2(e % 8, math.floor(e / 8)))
-    //println(generated)
+    val elements = (0 to 7).toList
+    val mod = (math.log(elements.length) / math.log(2)).toInt
+    val generated = fromCollection(elements, e => Vector2(e % mod, math.floor(e / mod)))
+    println(generated)
 }

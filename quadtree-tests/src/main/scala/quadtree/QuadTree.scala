@@ -169,5 +169,6 @@ object QuadTree:
     * @param pos The function to generate the position of each element with
     * @return    The QuadTree associated to the iterable
     */
-  def fromCollection[T](ts: Iterable[T], pos: T => Vector2) =
+  def fromCollection[T](ts: Iterable[T], pos: T => Vector2): QuadTree[T] = {
     ts.foldLeft(Empty: QuadTree[T])((qt, t) => qt.insert(WithPos(pos(t), t)))
+  } ensuring (res => res.size == ts.size)
