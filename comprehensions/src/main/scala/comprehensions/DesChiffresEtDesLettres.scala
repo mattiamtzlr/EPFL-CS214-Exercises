@@ -73,11 +73,32 @@ object DesChiffres:
       if n2 != 0 && n1 % n2 == 0 then Some(n1 / n2) else None
     val opStr = "/"
 
-  def partitions[A](l: List[A]): List[(List[A], List[A])] =
-      ???
+  def partitions[A](l: List[A]): List[(List[A], List[A])] = l match
+    case Nil    => List((Nil, Nil))
+    case h :: t =>
+      for 
+        // for every partition in tail...
+        (l1, l2) <- partitions(t)
+        // ...generate the two new partitions, by once appending to l1 and once to l2
+        partition <- List((h :: l1, l2), (l1, h :: l2))
+      yield partition
 
-  def allTrees(ints: List[Int]): List[Expr] =
-      ???
+  def allTrees(ints: List[Int]): List[Expr] = ints match
+    case Nil     => Nil
+    // if there is only one number, the only possibility is a number
+    case List(n) => List(Num(n)) 
+    case _       =>
+      val trees = for
+        (ints1, ints2) <- partitions(ints)       // for all partitions
+        if !(ints1.isEmpty || ints2.isEmpty)  // if they aren't empty
+        tree1 <- allTrees(ints1)              // recursively construct the left tree
+        tree2 <- allTrees(ints2)              // and the right tree
+        op    <- List(Add(_, _), Sub(_, _), Mul(_, _), Div(_, _))
+        res = op(tree1, tree2)                // construct a result (Option) for every operator
+        if !res.value.isEmpty                 // if not None
+      yield res
+
+      trees.groupBy(_.value).map(_._2.head).toList
 
   def leCompteEstBon(ints: List[Int], target: Int): Option[Expr] =
-      ???
+    allTrees(ints).find(_.value == Some(target))

@@ -1,7 +1,12 @@
 package comprehensions
 
 def isSafe(col: Int, queens: List[Int]): Boolean =
-  ???
+  val row = queens.length
+  queens.zipWithIndex.forall {
+    case (c, r) => 
+      c != col                          // check for same row
+      && (row - r).abs != (col - c).abs // check for same diagonal
+  }
 
 def queens(n: Int) =
   def placeQueens(k: Int): Set[List[Int]] =

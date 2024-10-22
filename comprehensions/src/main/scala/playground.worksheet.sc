@@ -42,3 +42,7 @@ val ordered2 = -5 :: 1 :: 7 :: 9 :: Nil
 merge(ordered1, ordered2)
 
 mergeSort(unordered)
+
+
+filter_tracedIfTrue(7 to 32)
+filter_traced(7 to 32)
