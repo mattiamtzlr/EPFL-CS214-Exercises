@@ -2,6 +2,7 @@ import parallelism.*
 import ParMap.*
 import ParSum.*
 import ParMatMul.*
+import ParCumSum.*
 
 Vector(1, 5, 3, 8, -1).map_vector(x => x + 1)
 Array(1, 5, 3, 8, -1).map_array_par2(x => x + 1)(new Array(5))
@@ -27,5 +28,10 @@ val arrow = Matrix(Array(
 
 ParMatMul.matmul(arrow, shifter)
 
-// ParCumSum.cumsum_sequential(Vector(1, 5, 3, 8, -1))
-// ParCumSum.cumsum_par2(Vector(1, 5, 3, 8, -1))
+
+val vector = Vector(1, 5, 3, 8, -1)
+cumsum_sequential(vector)
+
+mkSumTree(vector)
+
+cumsum_par2(vector)

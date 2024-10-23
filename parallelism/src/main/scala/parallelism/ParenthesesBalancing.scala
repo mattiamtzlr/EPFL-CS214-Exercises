@@ -33,7 +33,30 @@ object ParenthesesBalancing:
     (numOpen == 0)
 
   def isBalancedPar(str: List[Char]): Boolean =
-    val seqOp: (Any, Char) => Any = ???
-    val combOp: (Any, Any) => Any = ???
+    /* Idea: we want to consider indep sides of the string, parentheses open on on the left
+     * and the right, thus we aggregate two numbers at once: the number of unmatched (open) 
+     * parentheses on the left and on the right. */
+    
+    // sequence operation: combines the running total of open parentheses with the next char
+    val seqOp: ((Int, Int), Char) => (Int, Int) = 
+      (openPars, nextChar) => nextChar match
+        case '(' => (openPars._1, openPars._2 + 1)
+        case ')' =>
+          if openPars._2 > 0 then (openPars._1, openPars._2 - 1)
+          else (openPars._1 + 1, openPars._2)
+        case _   => openPars
+      
+    // combinational opeartion: combines the sub-totals of the parallelized parentheses counts
+    val combOp: ((Int, Int), (Int, Int)) => (Int, Int) = 
+      /* Check how many parentheses didn't get matched, if there are too many on one side
+       * collect them appropriately, example:
+       *   ((    ++    )))(((
+       *   0, 2  ++    3, 3
+       * = )(((
+       * = 1, 3 */
+      (left, right) => 
+        val extras = left._2 - right._1 // (-1) for the example
+        if extras >= 0 then (left._1, extras + right._2)
+        else (left._1 - extras, right._2) // (0 - (-1), 3) = (1, 3) for the example
 
-    str.par.aggregate(???)(seqOp, combOp) == ???
+    str.par.aggregate((0, 0))(seqOp, combOp) == (0, 0)

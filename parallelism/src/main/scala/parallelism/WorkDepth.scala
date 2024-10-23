@@ -102,12 +102,12 @@ object ParMatMul:
 
 object ParCumSum:
   def cumsum_sequential(v: Vector[Int]): Vector[Int] =
-    ???
+    v.scanLeft(0)(_ + _).tail
 
   enum SumTree:
     case Empty
     case Leaf(n: Int)
-    case Branch(_sum: Int, left: SumTree, rright: SumTree)
+    case Branch(_sum: Int, left: SumTree, right: SumTree)
 
     def sum = this match
       case Empty              => 0
@@ -119,13 +119,16 @@ object ParCumSum:
     case Vector()  => Empty
     case Vector(x) => Leaf(x)
     case _         =>
-      ???
-
+      val (lV, rV) = v.splitAt(v.size / 2)
+      val (lT, rT) = par2(mkSumTree(lV), mkSumTree(rV))
+      Branch(lT.sum + rT.sum, lT, rT)
+      
   def cumsum_sumtree(st: SumTree, leftSum: Int = 0): Vector[Int] = st match
     case Empty           => Vector()
     case Leaf(s)         => Vector(leftSum + s)
     case Branch(s, l, r) =>
-      ???
+      val (lC, rC) = par2(cumsum_sumtree(l, leftSum), cumsum_sumtree(r, leftSum +  l.sum))
+      lC ++ rC
 
   def cumsum_par2(v: Vector[Int]): Vector[Int] =
     cumsum_sumtree(mkSumTree(v))

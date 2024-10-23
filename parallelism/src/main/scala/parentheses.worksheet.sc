@@ -28,4 +28,5 @@ val expected = List(
 
 import ParenthesesBalancing.*
 parentheses.map(isBalancedRecursive(_)) == expected
-parentheses.map(isBalancedFold(_)) == expected
+parentheses.map(isBalancedFold(_))      == expected
+parentheses.map(isBalancedPar(_))       == expected
