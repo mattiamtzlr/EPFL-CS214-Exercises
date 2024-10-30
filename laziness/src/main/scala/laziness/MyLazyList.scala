@@ -80,16 +80,39 @@ object MyLazyList:
       )
 
     def map[B](f: A => B): MyLazyList[B] =
-      ???
+      MyLazyList(() =>
+        self.state match
+          case LZNil         => LZNil
+          case LZCons(x, xs) => LZCons(f(x), xs.map(f))
+      )
 
     def filter(p: A => Boolean): MyLazyList[A] =
-      ???
+      MyLazyList(() =>
+        self.state match
+          case LZNil         => LZNil
+          case LZCons(x, xs) => 
+            if p(x) then LZCons(x, xs.filter(p)) 
+            else xs.filter(p).state
+      )
 
     def zip[B](that: MyLazyList[B]): MyLazyList[(A, B)] =
-      ???
+      MyLazyList(() =>
+        (self.state, that.state) match
+          case (LZNil, LZNil)                 => LZNil
+          case (LZNil, _) | (_, LZNil)        => LZNil
+          case (LZCons(x, xs), LZCons(y, ys)) => LZCons((x, y), xs.zip(ys))
+      )
 
     def append(that: MyLazyList[A]): MyLazyList[A] =
-      ???
+      MyLazyList(() => 
+        self.state match
+          case LZNil         => that.state
+          case LZCons(x, xs) => LZCons(x, xs.append(that))
+      )
 
     def flatMap[B](f: A => MyLazyList[B]): MyLazyList[B] =
-      ???
+      MyLazyList(() =>
+        self.state match
+          case LZNil         => LZNil
+          case LZCons(x, xs) => f(x).append(xs.flatMap(f)).state
+      )

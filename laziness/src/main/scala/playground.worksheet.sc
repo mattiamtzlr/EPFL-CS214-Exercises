@@ -23,3 +23,30 @@ printLZ(fromFive)
 
 val from5until20 = range(5, 20)
 printLZ(from5until20)
+
+
+val fromFiveMapped = fromFive.map(_ * 2)
+printLZ(fromFiveMapped)
+
+val from5until20Filtered = from5until20.filter(_ % 5 == 0)
+printLZ(from5until20Filtered)
+
+val firstFiveZip = firstFive.zip(from5until20Filtered)
+printLZ(firstFiveZip)
+
+
+printLZ(anonymList)
+printLZ(fib)
+
+
+val firstFiveAppended = firstFive.append(from5until20Filtered)
+printLZ(firstFiveAppended)
+
+val firstFiveZipFlat = firstFiveZip.flatMap(t => cons(t._1, cons(t._2, empty)))
+printLZ(firstFiveZipFlat)
+
+
+printLZ(codes)
+printLZ(palCodes)
+printLZ(palCodes2)
+printLZ(funSeq, 250)
