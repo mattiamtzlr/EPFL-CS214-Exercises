@@ -1,7 +1,8 @@
 package mutation
 
-def sort(original: Array[Int]): Array[Int] =
-  val n = original.length
+def sort(a: Array[Int]): Array[Int] =
+  val n = a.length
+  val b = new Array(n)
 
   ???
 

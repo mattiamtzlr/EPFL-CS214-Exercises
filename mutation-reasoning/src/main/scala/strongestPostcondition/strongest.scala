@@ -36,7 +36,9 @@ def imperativeF1(x: BigInt): BigInt = {
   if y % 2 == 0 then z -= 3
 
   z
-} ensuring (z => ???)
+} ensuring (z => 
+  z == 2 || z == -1 || z == 8 || z == 5 || z == 1
+)
 
 def imperativeF2(x: BigInt): BigInt = {
   require(x >= -5 && x <= 5)
@@ -47,4 +49,4 @@ def imperativeF2(x: BigInt): BigInt = {
     if y > 0 then y -= 1
     else y += 1
   z
-} ensuring (z => ???)
+} ensuring (z => z >= 0 && z <= 5)
