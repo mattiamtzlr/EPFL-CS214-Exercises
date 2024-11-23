@@ -12,10 +12,18 @@ object RecursiveInterpreter:
   type Stack = List[Int]
 
   def evalOp(stack: Stack, op: Operation): Stack =
-    ???
-
+    op match
+      case Push(n) => n :: stack
+      case Add => stack match
+        case x :: y :: t => (x + y) :: t
+        case _           => stack
+      
+      case Sub => stack match
+        case x :: y :: t => (y - x) :: t
+        case _           => stack
+    
   def eval(p: List[Operation]): Stack =
-    ???
+    p.foldLeft(List.empty[Int])(evalOp)
 
 end RecursiveInterpreter
 

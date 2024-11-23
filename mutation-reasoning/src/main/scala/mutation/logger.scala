@@ -28,38 +28,20 @@ object EvalLogging:
   def eval(e: Expr, l: Logger, depth: Int = 0): Int =
     e match
       case Constant(a) => {
-        l.log(s"Constant($a) = $a", depth)
+        l.log(s"$e = $a", depth)
         a
       }
       case Add(a, b) => {
-        (a, b) match
-          case (Constant(x), Constant(y)) => {
-            l.log(s"Constant($x) + Constant($y) ->", depth)
-            val res = eval(a, l, depth + 1) + eval(b, l, depth + 1)
-            l.log(s"= $res", depth)
-            res
-          }
-
-          case (Constant(x), _) => ???
-
-          case (_, Constant(x)) => ???
-
-          case _ => eval(a, l, depth + 1) + eval(b, l, depth + 1)
+        l.log(s"$a + $b ->", depth)
+        val res = eval(a, l, depth + 1) + eval(b, l, depth + 1)
+        l.log(s"= $res", depth)
+        res
       }
       case Sub(a, b) => {
-        (a, b) match
-          case (Constant(x), Constant(y)) => {
-            l.log(s"Constant($x) - Constant($y) ->", depth)
-            val res = eval(a, l, depth + 1) - eval(b, l, depth + 1)
-            l.log(s"= $res", depth)
-            res
-          }
-
-          case (Constant(x), _) => ???
-
-          case (_, Constant(x)) => ???
-
-          case _ => eval(a, l, depth + 1) - eval(b, l, depth + 1)
+        l.log(s"$a - $b ->", depth)
+        val res = eval(a, l, depth + 1) - eval(b, l, depth + 1)
+        l.log(s"= $res", depth)
+        res
       }
     
 
