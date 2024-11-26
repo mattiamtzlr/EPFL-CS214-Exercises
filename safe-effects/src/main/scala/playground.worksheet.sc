@@ -15,8 +15,10 @@ sumLoop(l2)
 
 foldLeft(l1, 1)(_ * _)
 foldLeftLoop(l1, 1)(_ * _)
+foldLeftForeach[Int, Int](1)(_ * _)(l1)
 foldLeft(l2, 1)(_ * _)
 foldLeftLoop(l2, 1)(_ * _)
+foldLeftForeach[Int, Int](1)(_ * _)(l2)
 
 reverseAppendLoop(l1, l2).foldt(0)(_ + _)
 
