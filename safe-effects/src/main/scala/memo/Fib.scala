@@ -15,7 +15,6 @@ def fibMemo(n: Int): Int =
     )
   loop(n)
 
-import scala.collection.mutable.Map
 
 def fibIter(n: Int): Int =
   val cache: Map[Int, Int] = Map()
@@ -24,7 +23,6 @@ def fibIter(n: Int): Int =
       if idx <= 1 then 1 else cache(idx - 1) + cache(idx - 2)
   cache(n)
 
-import scala.collection.mutable.Map
 
 def fibIterOpt(n: Int): Int =
   val cache: Map[Int, Int] = Map()
@@ -34,7 +32,6 @@ def fibIterOpt(n: Int): Int =
     cache.remove(idx - 2)
   cache(n)
 
-import scala.collection.mutable.Map
 
 def fibIterFinal(n: Int): Int =
   var f0 = 1
