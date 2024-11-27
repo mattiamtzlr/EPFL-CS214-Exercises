@@ -1,5 +1,3 @@
-import memo.*
-import exceptions.*
 import tailRecursion.lists.*
 
 val l1 = List(1, 2, 3)
@@ -28,21 +26,15 @@ l3.groupBy(s => s.head)
 groupByForeach[String, Char](s => s.head)(l3)
 groupByFoldRight[String, Char](s => s.head)(l3)
 
+import tailRecursion.trees.*
 
-fib(5)
-fibIter(5)
-fibIterOpt(5)
-fibIterFinal(5)
+import Tree.*
+val t1 = Node(Leaf(4), Node(Leaf(2), Node(Leaf(7), Leaf(1))))
+isRightLineTree(t1)
+sumRightLineTree(t1)
 
+val t2 = Node(Node(Leaf(8), Node(Leaf(7), Leaf(2))), Leaf(5))
+sumRotate(t2, 0)
 
-/*
-choose(7, 3)
-chooseMemo(7, 3)
-chooseIter(7, 3)
-chooseIterFinal(7, 3)
-chooseIterFinalGC(7, 3)
-chooseIterFinalOpt(7, 3)
-*/
-
-
-// viewMoves(hanoi(3), 3)
+tailRecursion.trees.sumLoop(t1)
+tailRecursion.trees.sumLoop(t2)

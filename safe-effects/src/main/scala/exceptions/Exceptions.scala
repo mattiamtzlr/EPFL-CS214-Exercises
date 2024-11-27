@@ -12,7 +12,13 @@ extension [T](l: List[T])
 
 extension [T](l: List[T])
   def containsExn(t0: T): Boolean =
-    ???
+    case object Found extends Exception
+    try
+      for e <- l if e == t0 do throw Found
+      false
+    catch
+      case Found => true
+
 
 import scala.util.boundary
 
@@ -23,8 +29,6 @@ extension [T](l: List[T])
 extension [T](l: List[T])
   def findExn(p: T => Boolean): Option[T] =
     ???
-
-import scala.util.boundary
 
 extension [T](l: List[T])
   def findBoundary(p: T => Boolean): Option[T] =
