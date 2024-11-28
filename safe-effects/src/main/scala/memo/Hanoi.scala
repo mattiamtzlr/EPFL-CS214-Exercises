@@ -6,10 +6,17 @@ enum Peg:
 case class Move(from: Peg, to: Peg)
 
 def hanoiHelper(src: Peg, dst: Peg, third: Peg, n: Int): Seq[Move] =
-  ???
+  import Peg.*
+  if n == 0 then Seq()
+  else
+    hanoiHelper(src, third, dst, n - 1) ++
+    Seq(Move(src, dst)) ++
+    hanoiHelper(third, dst, src, n - 1)
 
 def hanoi(n: Int): Seq[Move] =
-  ???
+  import Peg.*
+
+  hanoiHelper(Left, Right, Middle, n)
 
 case class PegState(
     name: Peg,

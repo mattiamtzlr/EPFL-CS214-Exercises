@@ -30,11 +30,39 @@ import tailRecursion.trees.*
 
 import Tree.*
 val t1 = Node(Leaf(4), Node(Leaf(2), Node(Leaf(7), Leaf(1))))
+val t2 = Node(Node(Leaf(8), Node(Leaf(7), Leaf(2))), Node(Leaf(3), Leaf(5)))
+
+sizeRec(t1)
+sizeLoop(t1)
+
+sizeRec(t2)
+sizeLoop(t2)
+
 isRightLineTree(t1)
 sumRightLineTree(t1)
 
-val t2 = Node(Node(Leaf(8), Node(Leaf(7), Leaf(2))), Leaf(5))
+isRightLineTree(t2)
 sumRotate(t2, 0)
 
 tailRecursion.trees.sumLoop(t1)
 tailRecursion.trees.sumLoop(t2)
+
+val stack = MStack(List(3, 7, 2))
+stack.push(5)
+stack.size
+stack.contains(5)
+stack.pop()
+stack.pop()
+stack.pop()
+stack.pop()
+stack.isEmpty
+stack.size
+
+postOrderTraversal(t1)
+postOrderTraversal(t2)
+
+reduceLoop(t1, _ * _)
+reduceLoop(t2, _ * _)
+
+mapLoop(t1, i => (i + 97).toChar)
+mapLoop(t2, i => i % 2 == 0)

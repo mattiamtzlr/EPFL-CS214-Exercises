@@ -15,4 +15,4 @@ chooseIterFinalGC(7, 3)
 chooseIterFinalOpt(7, 3)
 
 
-// viewMoves(hanoi(3), 3)
+viewMoves(hanoi(3), 3)
