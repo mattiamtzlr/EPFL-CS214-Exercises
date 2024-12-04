@@ -1,0 +1,10 @@
+name := "futures"
+scalaVersion := "3.5.0"
+libraryDependencies += "com.softwaremill.sttp.client4" %% "core" % "4.0.0-M19"
+libraryDependencies += "com.softwaremill.sttp.client4" %% "upickle" % "4.0.0-M19"
+libraryDependencies += "org.scalameta" %% "munit" % "1.0.1" % Test
+scalacOptions ++= Seq("-deprecation", "-feature", "-language:fewerBraces", "-Xfatal-warnings")
+// run / fork := true
+// run / connectInput := true
+Test / parallelExecution := false
+Test / testForkedParallel := false
