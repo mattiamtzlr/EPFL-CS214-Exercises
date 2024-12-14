@@ -10,7 +10,7 @@ val addressBook: List[Address] = List(
   (1015, "Rte des Noyerettes"),
   (1015, "Rte Cantonale"))
 
-// val sortedAddressBook = addressBook.sorted(using Orderings.pairOrdering)
+val sortedAddressBook = addressBook.sorted
 
 val students = List(
   Student("Alice", 2021),
@@ -20,7 +20,7 @@ val students = List(
   Student("Eve", 2023))
 
 val sortedStudents1 = students.sorted(using Orderings.studentOrdering1)
-// val sortedStudents2 = students.sorted(using Orderings.studentOrdering2)
+val sortedStudents2 = students.sorted(using Orderings.studentOrdering2)
 
 val xs = List(1, 2, 3, 4, 5)
 
@@ -28,16 +28,14 @@ reduceSemiGroup(xs)(using Algebra.sumSemiGroup)
 // error：empty.reduceLeft not supported
 // reduceSemiGroup(List.empty)(using Algebra.sumSemiGroup)
 
-// reduce(xs)(using Algebra.sumMonoid)
-// ok
-// reduce(List.empty)(using Algebra.sumMonoid)
+reduce(List.empty)(using Algebra.sumMonoid)
 
 val bigints = List(BigInt(-8), BigInt(2), BigInt(0), BigInt(4), BigInt(100))
 reduceSemiGroup(bigints)
 val posInfinity: Option[BigInt] = None
 val liftedBigints = posInfinity :: bigints.map(Option(_))
 // adding a positive infinity value to the list should not change the result
-// reduce(liftedBigints)
+reduce(liftedBigints)
 
 val e1 = Let("x", Num(1), Add(Var("x"), Num(2)))
 evaluate(e1)
